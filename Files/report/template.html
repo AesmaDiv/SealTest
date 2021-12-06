@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- <meta name="viewport" content="width=210mm, height=297mm, initial-scale=1.0"> -->
+    <link rel="stylesheet" href="./style.css">
+    <title>Document</title>
+</head>
+<body>
+    <header>
+        <div id="header-pump-type">№ {{ test_info['ID'] }}</div>
+        <div id="header-title">
+            <img id="header-title-logo" src="logo.png">
+            <div id="header-title-company">ЛУКОЙЛ ЭПУ СЕРВИС</div>
+        </div>
+        <div id="header-test-time">{{ test_info['DateTime'] }}</div>
+    </header>
+    <main>
+        <p>Информация по насосу:</p>
+        <div id="pump-info">
+            <span class="info-label">Производитель</span>
+            <span class="info-label">Типоразмер</span>
+            <span class="info-label">Заводской номер</span>
+
+            <span class="info-value">{{type_info.ProducerName}}</span>
+            <span class="info-value">{{type_info.Name }}</span>
+            <span class="info-value">{{pump_info.Serial }}</span>
+            
+            <span class="info-label">Длина</span>
+            <span class="info-label">Кол-во ступеней</span>
+            <span class="info-label">Вылет вала</span>
+            
+            <span class="info-value">{{pump_info.Length}}</span>
+            <span class="info-value">{{pump_info.Stages}}</span>
+            <span class="info-value">{{pump_info.Shaft}}</span>
+        </div>
+        <p>Информация по испытанию:</p>
+        <div id="test-info">
+            <span class="info-label">Дата теста</span>
+            <span class="info-label">Заказчик</span>
+            <span class="info-label">Наряд-заказ №</span>
+            <span class="info-label">Сборка</span>
+            
+            <span class="info-value">{{test_info.DateTime}}</span>
+            <span class="info-value">{{test_info.Customer}}</span>
+            <span class="info-value">{{test_info.OrderNum}}</span>
+            <span class="info-value">{{test_info.Assembly}}</span>
+            
+            <span class="info-label">Месторождение</span>
+            <span class="info-label">Куст</span>
+            <span class="info-label">Скважина</span>
+            <span class="info-label">Суткопробег</span>
+            
+            <span class="info-value">{{test_info.Location}}</span>
+            <span class="info-value">{{test_info.Lease}}</span>
+            <span class="info-value">{{test_info.Well}}</span>
+            <span class="info-value">{{test_info.DaysRun}}</span>
+        </div>
+        <p>Результаты испытания:</p>
+        <div id="graph-container">
+            <img id="graph-image" src="./graph_image.jpg" alt="graph image">
+        </div>
+        <div id="delta-info">
+            <span class="delta-all title"></span>
+            <span class="delta-lft title">Дельта напора, %:</span>
+            <span class="delta-pwr title">Дельта мощности, %:</span>
+            <span class="delta-eff title">Отклонение максимального КПД от номинального, %:</span>
+
+            <span class="delta-all min">Мин.</span>
+            <span class="delta-lft min">{{delta_lft[0] | round(2)}}</span>
+            <span class="delta-pwr min">{{delta_pwr[0] | round(2)}}</span>
+
+            <span class="delta-all nom">Ном.</span>
+            <span class="delta-lft nom">{{delta_lft[1] | round(2)}}</span>
+            <span class="delta-pwr nom">{{delta_pwr[1] | round(2)}}</span>
+            <span class="delta-eff nom">{{delta_eff | round(2)}}</span>
+
+            <span class="delta-all max">Макс.</span>
+            <span class="delta-lft max">{{delta_lft[2] | round(2)}}</span>
+            <span class="delta-pwr max">{{delta_pwr[2] | round(2)}}</span>
+            <span class="delta-eff max"></span>
+        </div>
+        <div id="test-table">
+            <span class="test-table label">№ точки</span>
+            <span class="test-table label">Расход, м3/сут</span>
+            <span class="test-table label">Напор / ступ., м</span>
+            <span class="test-table label">Мощность / ступ., кВт</span>
+            <span class="test-table label">КПД, %</span>
+            <!-- <span class="test-table label">Об/мин</span> -->
+            <span class="test-table label">Напор, м</span>
+            <span class="test-table label">Мощность, кВт</span>
+            {% for i in range(test_info.num_points()) %}
+                <span class="test-table value">{{i + 1}}</span>
+                <span class="test-table value">{{test_info.values_flw[i]|round(1)}}</span>
+                <span class="test-table value">{{test_info.values_lft[i]|round(1)}}</span>
+                <span class="test-table value">{{test_info.values_pwr[i]|round(3)}}</span>
+                <span class="test-table value">{{test_info.values_eff[i]|round(1)}}</span>
+                <span class="test-table value">{{(test_info.values_lft[i] * pump_info['Stages'])|round(3)}}</span>
+                <span class="test-table value">{{(test_info.values_pwr[i] * pump_info['Stages'])|round(3)}}</span>
+            {% endfor %}
+        </div>
+        <div id="test-table-bottom">
+            <span><i>
+                * Мощность и напор даны с поправкой на плотность воды (1000 кг/м3).<br>
+                * Дебит, напор и мощность нормализированы на 2910 об/мин.<br>
+                * Насос испытывался в горизонтальном положении.<br></i>
+            </span>
+            <div class="vibr-info">
+                <p >Замер вибрации:</p>
+                <div class="vibr-table">
+                    <span>Точка 1:</span>
+                    <span>{{test_info.values_vbr[0]}}</span>
+                    <span>Точка 2:</span>
+                    <span>{{test_info.values_vbr[1]}}</span>
+                    <span>Точка 3:</span>
+                    <span>{{test_info.values_vbr[2]}}</span>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="comments">
+            <p>Примечания:</p>
+            <span>
+                Должен заметить, что мы продолжаем мониторинг, и должен также заметить,
+                что это не первый случай, когда после предостережений, высказанных в том
+                числе и членами нашей комиссии, такие компании, как Google, удаляют
+                вредоносный контент, который, по сути, является противоправным.
+            </span>
+        </div>
+        <div class="signatures">
+            <p>Испытатель:</p>
+            <p>_______________________________</p>
+            <p>Мастер:</p>
+            <p>_______________________________</p>
+        </div>
+    </footer>
+</body>
+</html>

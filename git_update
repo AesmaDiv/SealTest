@@ -1,0 +1,7 @@
+#!/bin/zsh
+find . -type d -name __pycache__ -exec rm -rf {} \;
+git config --global user.name "AesmaDiv"
+git config --global user.email "jhwh.0001@gmail.com"
+git add .
+git commit -m "init commit"
+git push origin main
