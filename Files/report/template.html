@@ -9,7 +9,7 @@
 </head>
 <body>
     <header>
-        <div id="header-pump-type">№ {{ test_info['ID'] }}</div>
+        <div id="header-seal-type">№ {{ test_info['ID'] }}</div>
         <div id="header-title">
             <img id="header-title-logo" src="logo.png">
             <div id="header-title-company">ЛУКОЙЛ ЭПУ СЕРВИС</div>
@@ -18,22 +18,22 @@
     </header>
     <main>
         <p>Информация по насосу:</p>
-        <div id="pump-info">
+        <div id="seal-info">
             <span class="info-label">Производитель</span>
             <span class="info-label">Типоразмер</span>
             <span class="info-label">Заводской номер</span>
 
             <span class="info-value">{{type_info.ProducerName}}</span>
             <span class="info-value">{{type_info.Name }}</span>
-            <span class="info-value">{{pump_info.Serial }}</span>
+            <span class="info-value">{{seal_info.Serial }}</span>
             
             <span class="info-label">Длина</span>
             <span class="info-label">Кол-во ступеней</span>
             <span class="info-label">Вылет вала</span>
             
-            <span class="info-value">{{pump_info.Length}}</span>
-            <span class="info-value">{{pump_info.Stages}}</span>
-            <span class="info-value">{{pump_info.Shaft}}</span>
+            <span class="info-value">{{seal_info.Length}}</span>
+            <span class="info-value">{{seal_info.Stages}}</span>
+            <span class="info-value">{{seal_info.Shaft}}</span>
         </div>
         <p>Информация по испытанию:</p>
         <div id="test-info">
@@ -96,8 +96,8 @@
                 <span class="test-table value">{{test_info.values_lft[i]|round(1)}}</span>
                 <span class="test-table value">{{test_info.values_pwr[i]|round(3)}}</span>
                 <span class="test-table value">{{test_info.values_eff[i]|round(1)}}</span>
-                <span class="test-table value">{{(test_info.values_lft[i] * pump_info['Stages'])|round(3)}}</span>
-                <span class="test-table value">{{(test_info.values_pwr[i] * pump_info['Stages'])|round(3)}}</span>
+                <span class="test-table value">{{(test_info.values_lft[i] * seal_info['Stages'])|round(3)}}</span>
+                <span class="test-table value">{{(test_info.values_pwr[i] * seal_info['Stages'])|round(3)}}</span>
             {% endfor %}
         </div>
         <div id="test-table-bottom">

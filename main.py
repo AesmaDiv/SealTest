@@ -21,8 +21,8 @@ Journal = __import__('AesmaLib.journal', fromlist=['Journal']).Journal
 ROOT = os.path.dirname(__file__)
 PATHS = {
     'DB': os.path.join(ROOT, 'Files/seals.sqlite'),  # путь к файлу базы данных
-    'WND': os.path.join(ROOT, 'Files/mainwindow.ui'),  # путь к файлу GUI
-    'TYPE': os.path.join(ROOT, 'Files/pumpwindow.ui'),  # путь к файлу GUI
+    'WND': os.path.join(ROOT, 'Files/mainwindow_seal.ui'),  # путь к файлу GUI
+    'TYPE': os.path.join(ROOT, 'Files/seal_window.ui'),  # путь к файлу GUI
     'TEMPLATE': os.path.join(ROOT, 'Files/report')  # путь к шаблону протокола
 }
 

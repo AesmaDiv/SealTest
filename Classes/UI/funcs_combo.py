@@ -3,23 +3,23 @@
 """
 from AesmaLib.journal import Journal
 from Classes.UI import models
-from Classes.Data.alchemy_tables import Assembly, Customer, Producer, Type, Pump
+from Classes.Data.alchemy_tables import Assembly, Customer, Producer, Type, Seal
 
 
 @Journal.logged
 def fillCombos(window, db_manager):
     """ инициализирует комбобоксы --> """
     fillCombos_test(window, db_manager)
-    fillCombos_pump(window, db_manager)
+    fillCombos_seal(window, db_manager)
 
 
 def fillCombos_test(window, db_manager):
     """ инициализирует комбобоксы для теста --> """
     fillCombo_customers(window, db_manager)
-    fillCombo_assembly(window, db_manager)
+    fillCombo_head_base(window, db_manager)
 
 
-def fillCombos_pump(window, db_manager):
+def fillCombos_seal(window, db_manager):
     """ инициализирует комбобоксы для насоса --> """
     fillCombo_producers(window, db_manager)
     fillCombo_types(window, db_manager)
@@ -29,41 +29,32 @@ def fillCombos_pump(window, db_manager):
 @Journal.logged
 def fillCombo_customers(window, db_manager):
     """ --> заполняет заказчик (cmbCustomer) """
-    # qp = QueryParams('Customers', ['ID', 'Name'])
-    # fill_combo(window.cmbCustomer, db_manager, qp)
     fillCombobox(window.cmbCustomer, db_manager, Customer, ['ID', 'Name'])
 
 
 @Journal.logged
-def fillCombo_assembly(window, db_manager):
+def fillCombo_head_base(window, db_manager):
     """ --> заполняет сборка (cmbAssembly) """
-    # qp = QueryParams('Assemblies', ['ID', 'Name'])
-    # fill_combo(window.cmbAssembly, db_manager, qp)
-    fillCombobox(window.cmbAssembly, db_manager, Assembly, ['ID', 'Name'])
+    fillCombobox(window.cmbHead, db_manager, Assembly, ['ID', 'Name'])
+    fillCombobox(window.cmbBase, db_manager, Assembly, ['ID', 'Name'])
 
 
 @Journal.logged
 def fillCombo_producers(window, db_manager):
     """ --> заполняет производитель (cmbProducer) """
-    # qp = QueryParams('Producers', ['ID', 'Name'])
-    # fill_combo(window.cmbProducer, db_manager, qp)
     fillCombobox(window.cmbProducer, db_manager, Producer, ['ID', 'Name'])
 
 
 @Journal.logged
 def fillCombo_types(window, db_manager):
     """ --> заполняет типоразмер (cmbType) """
-    # qp = QueryParams('Types', ['ID', 'Name', 'Producer'])
-    # fill_combo(window.cmbType, db_manager, qp)
     fillCombobox(window.cmbType, db_manager, Type, ['ID', 'Name', 'Producer'])
 
 
 @Journal.logged
 def fillCombo_serials(window, db_manager):
     """ --> заполняет зав.номер (cmbSerial) """
-    # qp = QueryParams('Pumps', ['ID', 'Serial', 'Type'])
-    # fill_combo(window.cmbSerial, db_manager, qp)
-    fillCombobox(window.cmbSerial, db_manager, Pump, ['ID', 'Serial', 'Type'])
+    fillCombobox(window.cmbSerial, db_manager, Seal, ['ID', 'Serial', 'Type'])
 
 
 def fillCombo(combo, db_manager, query_params):
@@ -86,7 +77,7 @@ def fillCombobox(combo, db_manager, table_class, fields):
     combo.setModel(model)
 
 
-def resetFilters_pumpInfo(window):
+def resetFilters_sealInfo(window):
     """ сбрасывает фильт для комбобоксов насоса """
     resetFilter(window.cmbSerial)
     resetFilter(window.cmbType)

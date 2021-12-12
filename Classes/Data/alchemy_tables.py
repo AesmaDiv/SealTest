@@ -3,7 +3,6 @@
 """
 from dataclasses import dataclass
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
 from sqlalchemy.sql.schema import Column, ForeignKey
 from sqlalchemy.sql.sqltypes import BLOB, BOOLEAN, DECIMAL, FLOAT, INTEGER, VARCHAR, String
 
@@ -45,7 +44,7 @@ class Type(Base):
     Thrust = Column('Thrust', FLOAT)
     Temp = Column('Temp', FLOAT)
     Power = Column('Power', FLOAT)
-    Rotation = Column('Rotation', INTEGER)
+    Direction = Column('Direction', INTEGER)
     TestPressure = Column('TestPressure', BOOLEAN)
     TestThrust = Column('TestThrust', BOOLEAN)
     ProducerName = Column('ProducerName', VARCHAR)
@@ -57,7 +56,6 @@ class Seal(Base):
     __tablename__ = 'Seals'
     ID = Column('ID', INTEGER, primary_key=True)
     Serial = Column('Serial', VARCHAR)
-    Series = Column('Series', VARCHAR)
     Type = Column('Type', INTEGER, ForeignKey('Types.ID'))
 
 
@@ -78,8 +76,9 @@ class Test(Base):
     OilShavings = Column('OilShavings', BOOLEAN)
     OilWater = Column('OilWater', BOOLEAN)
     OilKV = Column('OilKV', DECIMAL)
-    Shaft = Column('Shaft', VARCHAR)
-    Extensions = Column('Extensions', VARCHAR)
+    Rotation = Column('Rotation', VARCHAR)
+    ExtTop = Column('ExtTop', VARCHAR)
+    ExtBottom = Column('ExtBottom', VARCHAR)
     Vibrations = Column('Vibrations', VARCHAR)
     Comments = Column('Comments', VARCHAR)
     RawData = Column('RawData', BLOB)

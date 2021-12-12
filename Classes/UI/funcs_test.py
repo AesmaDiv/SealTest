@@ -3,7 +3,7 @@
 """
 from PyQt5.QtWidgets import QSlider
 from Classes.UI import funcs_table, funcs_aux
-from Classes.UI.funcs_aux import parseFloat, calculateEff
+from Classes.UI.funcs_aux import parseFloat
 from Classes.Adam.adam_manager import AdamManager
 from Classes.Adam.adam_config import params
 
@@ -97,9 +97,9 @@ def switchPointsStagesReal(wnd, test_info):
     data = funcs_table.getData(wnd.tablePoints)
     if data:
         if wnd.radioPointsReal.isChecked():
-            func = lambda x: (x * test_info.pump_['Stages'])
+            func = lambda x: (x * test_info.seal_['Stages'])
         else:
-            func = lambda x: (x / test_info.pump_['Stages'])
+            func = lambda x: (x / test_info.seal_['Stages'])
         for item in data:
             item['lft'] = round(func(item['lft']), 2)
             item['pwr'] = round(func(item['pwr']), 2)

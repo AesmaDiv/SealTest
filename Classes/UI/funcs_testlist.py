@@ -58,7 +58,7 @@ def filterReset(window, data_manager):
     """ сбрасывает фильтр списка тестов """
     funcs_group.groupClear(window.groupTestList)
     funcs_group.groupClear(window.groupTestInfo)
-    funcs_group.groupClear(window.groupPumpInfo)
+    funcs_group.groupClear(window.groupSealInfo)
     data_manager.clearRecord()
     window.tests_filter.applyFilter()
     funcs_table.selectRow(window.tableTests, -1)

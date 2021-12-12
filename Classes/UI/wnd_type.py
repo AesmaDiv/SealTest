@@ -2,7 +2,7 @@
     Модуль описывает класс окна информации о типоразмере
 """
 from PyQt5 import uic
-from PyQt5.QtWidgets import QDialog, QLabel, QLineEdit
+from PyQt5.QtWidgets import QComboBox, QDialog, QLabel, QLineEdit
 from Classes.UI import funcs_combo
 from Classes.Data.alchemy_tables import Producer, Type
 from AesmaLib.journal import Journal
@@ -69,8 +69,13 @@ class TypeWindow(QDialog):
 
     def _getFieldsData(self) -> dict:
         """ получение значений из полей """
-        # производитель из комбобокса
-        result = {'Producer': self.cmbProducer.currentData()['ID']}
+        # из комбобоксов и чекбоксов
+        result = {
+            'Producer': self.cmbProducer.currentData()['ID'],
+            'Direction': self.cmbDirection.currentIndex(),
+            'TestPressure': self.chkPressure.isChecked(),
+            'TestThrust': self.chkThrust.isChecked(),
+        }
         # остальные из текстовых полей
         result.update({
             item.objectName().replace("txt", ""): \
@@ -80,67 +85,34 @@ class TypeWindow(QDialog):
 
     def _checkFieldsData(self, data: dict) -> bool:
         """ проверка значений """
-        if not self._checkAllFilled(data):
-            return False
-        if not self._checkProducer(data):
-            return False
-        if not self._checkNumeric(data):
-            return False
-        if not self._checkPoints(data):
-            return False
-        return True
-
-    def _checkAllFilled(self, data: dict) -> bool:
-        """ проверка на заполнение всех полей """
-        # список пустых полей
-        empty = [key for key, val in data.items() if not val]
-        if empty:
-            # список соответствующих полям заголовков
-            titles = []
-            for name in empty:
-                lbl = self.findChild(QLabel, f"lbl{name}")
-                if lbl:
-                    titles.append(f"\n->  {lbl.text()}")
-            # создание списка для отображения
-            msg = ("").join(titles)
-            msg = f"Необходимо заполнить следующие поля:\n{msg}"
-            Message.show("Внимание", msg)
+        wrong_fields = []
+        numeric_fields = ('Rpm', 'Thrust', 'Temp', 'Power')
+        for name, value in data.items():
+            # проверка числовых значений
+            if name in numeric_fields and not value.isnumeric():
+                wrong_fields.append(self._getToolTip(QLineEdit, f"txt{name}"))
+            # проверка наличия пустых полей
+            elif value in (-1, "", None):
+                wrong_fields.append(
+                    self._getToolTip(
+                        QComboBox if value == -1 else QLineEdit,
+                        f"cmb{name}" if value == -1 else f"txt{name}"
+                    )
+                )
+        wrong_fields = [field for field in wrong_fields if field != '']
+        # вывод сообщение об ошибке
+        if wrong_fields:
+            wrong_fields.insert(0, "Неверно заполнены поля:")
+            Message.show(
+                "ОШИБКА",
+                '\n  ->'.join(wrong_fields)
+            )
             return False
         return True
 
-    @staticmethod
-    def _checkProducer(data: dict) -> bool:
-        """ проверка производителя """
-        if not isinstance(data['Producer'], int):
-            Message.show('ОШИБКА', 'Неверно указан производитель')
-            return False
-        return True
-
-    def _checkNumeric(self, data: dict) -> bool:
-        """ проверка числовых значений """
-        for name in ('Rpm', 'Min', 'Nom', 'Max'):
-            if not data[name].isnumeric():
-                elem = self.findChild(QLabel, f'lbl{name}')
-                if elem:
-                    name = elem.text()
-                Message.show('ОШИБКА', f'Поле {name} должно содержать число')
-                return False
-        return True
-
-    @staticmethod
-    def _checkPoints(data: dict) -> bool:
-        """ проверка корректности и длины массивов точек """
-        try:
-            vals_flw = list(map(float, data['Flows'].split(',')))
-            vals_lft = list(map(float, data['Lifts'].split(',')))
-            vals_pwr = list(map(float, data['Powers'].split(',')))
-            if not len(vals_flw) == len(vals_lft) == len(vals_pwr):
-                Message.show('ОШИБКА', 'Кол-во значений в полях точек не совпадает')
-                return False
-        except (TypeError, ValueError):
-            Message.show('ОШИБКА', 'Неверный формат в полях точек')
-            return False
-        return True
+    def _getToolTip(self, item_type: type, name: str):
+        item = self.findChild(item_type, name)
+        return item.toolTip() if item else ''
 
     def _clearFields(self):
         """ очистка полей """

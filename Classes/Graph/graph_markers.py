@@ -6,7 +6,7 @@ from PyQt5 import QtGui
 from PyQt5.QtCore import Qt, QEvent, QPoint, QPointF, pyqtSignal
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QFrame
-from Classes.Graph.pump_graph import PumpGraph
+from Classes.Graph.seal_graph import SealGraph
 from AesmaLib.GraphWidget.chart import Chart
 from AesmaLib.journal import Journal
 
@@ -15,9 +15,9 @@ class Markers(QFrame):
     """ Класс маркеров графика """
     eventMove = pyqtSignal(dict)
 
-    def __init__(self, names: list, graph: PumpGraph, parent=None):
+    def __init__(self, names: list, graph: SealGraph, parent=None):
         super().__init__(parent)
-        self._graph: PumpGraph = graph
+        self._graph: SealGraph = graph
         self._point_lines: dict = {
             "vis": False,
             "max": 0,
@@ -87,7 +87,7 @@ class Markers(QFrame):
         else:
             Journal.log(__name__, 'Error = no such marker')
 
-    def repositionFor(self, graph: PumpGraph):
+    def repositionFor(self, graph: SealGraph):
         """ перенос маркера на другой холст """
         left, top, _, _ = graph.getMargins()
         size = graph.getDrawArea()

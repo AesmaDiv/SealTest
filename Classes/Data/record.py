@@ -129,19 +129,12 @@ class RecordTest(RecordType):
     def __init__(self, db_manager, super_class=Test, rec_id=0):
         RecordType.__init__(self, db_manager, super_class, rec_id)
         self.values_vbr = []
-        self.values_ext = []
 
     def read(self, rec_id) -> bool:
         """ загружает запись из таблицы БД по ID
         -> возвращает успех """
         result = super().read(rec_id)
-        if result:
-            self.parseValues(self.Vibrations, self.values_vbr)
-            self.parseValues(self.Extensions, self.values_ext)
+        if result and self.Vibrations:
+            func = lambda x: float(x) if x != '' else 0.0
+            values_vbr = list(map(func, self.Vibrations.split(';')))
         return result
-
-    @staticmethod
-    def parseValues(field, values_array: list):
-        values_array = []
-        if field:
-            values_array = list(map(float, field.split(';')))

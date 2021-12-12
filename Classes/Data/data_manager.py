@@ -5,7 +5,7 @@
 from dataclasses import dataclass
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm.session import sessionmaker
-from Classes.Data.alchemy_tables import Seal, Test
+from Classes.Data.alchemy_tables import Customer, Seal, Test
 from Classes.Data.record import Record, RecordType, RecordSeal, RecordTest
 from AesmaLib.message import Message
 from AesmaLib.journal import Journal
@@ -110,42 +110,13 @@ class DataManager:
         result = self.execute(func)
         return list(map(dict, result))
 
-    def checkExists_serial(self, serial, type_id=0):
-        """ возвращает ID записи с введенным серийным номером """
+    def findRecord(self, db_class, where_func, filter_func=None):
+        """ поиск записи по условию с фильтрацией """
         def func(**kwargs):
-            query = kwargs['session'].query(Seal).where(
-                Seal.Serial == serial
-            ).filter(Seal.Type == type_id)
-            if query.count():
-                choice =  Message.ask(
-                    "Внимание",
-                    "Насос с таким заводским номером "
-                    "уже присутствует в базе данных.\n"
-                    "Хотите выбрать его?",
-                    "Выбрать", "Отмена"
-                )
-                return query.one().ID, choice
-            return 0, False
-        result_id, result_state = self.execute(func)
-        return result_id, result_state
-
-    def checkExists_ordernum(self, order_num, with_select=False):
-        """ возвращает ID записи с введенным номером наряд-заказа """
-        def func(**kwargs):
-            query = kwargs['session'].query(Test).where(
-                Test.OrderNum == order_num
-            )
-            if query.count():
-                if with_select:
-                    choice =  Message.choice(
-                        "Внимание",
-                        "Запись с таким наряд-заказом "
-                        "уже присутствует в базе данных.\n"
-                        "Хотите выбрать её или создать новую?",
-                        ("Выбрать", "Создать", "Отмена")
-                    )
-                return query.one().ID, choice
-            return 0, -1
+            query = kwargs['session'].query(db_class).where(where_func(db_class))
+            if filter_func:
+                query = query.filter(filter_func(db_class))
+            return query.one().ID if query.count() else 0
         return self.execute(func)
 
     @Journal.logged

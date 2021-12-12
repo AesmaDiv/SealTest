@@ -3,7 +3,6 @@
 """
 from PyQt5.QtWidgets import QLineEdit
 from AesmaLib.journal import Journal
-from Classes.UI.funcs_aux import calculateEff
 from Classes.UI import funcs_table, funcs_group, funcs_test
 
 
@@ -32,20 +31,20 @@ def displayRecord(window, data_manager):
     testdata = data_manager.getTestdata()
     funcs_group.groupDisplay(window.groupTestInfo, testdata.test_)
     funcs_group.groupLock(window.groupTestInfo, True)
-    displayPumpInfo(window, testdata)
-    displayTest_points(window, testdata)
+    displaySealInfo(window, testdata)
+    # displayTest_points(window, testdata)
 
 
-def displayPumpInfo(window, testdata):
+def displaySealInfo(window, testdata):
     """ отображает информацию о насосе """
-    pump_id = testdata.test_['Pump']
-    Journal.log(f"{__name__}::\t загружает информацию о насосе --> {pump_id}")
-    if testdata.pump_.read(pump_id):
-        type_id = testdata.pump_['Type']
+    seal_id = testdata.test_['Seal']
+    Journal.log(f"{__name__}::\t загружает информацию о насосе --> {seal_id}")
+    if testdata.seal_.read(seal_id):
+        type_id = testdata.seal_['Type']
         Journal.log(f"{__name__}::\t загружает информацию о типе --> {type_id}")
         if testdata.type_.read(type_id):
-            funcs_group.groupDisplay(window.groupPumpInfo, testdata.pump_)
-            funcs_group.groupLock(window.groupPumpInfo, True)
+            funcs_group.groupDisplay(window.groupSealInfo, testdata.seal_)
+            funcs_group.groupLock(window.groupSealInfo, True)
             window.groupTestFrame.setTitle(testdata.type_.Name)
 
 
@@ -68,8 +67,7 @@ def displayTest_points(wnd, testdata):
         flw = test.values_flw[i]
         lft = test.values_lft[i]
         pwr = test.values_pwr[i]
-        eff = calculateEff(flw, lft, pwr)
-        point_data = (flw, lft, pwr, eff, testdata.pump_.Stages)
+        point_data = (flw, lft, pwr, _, testdata.seal_.Stages)
         funcs_table.addToTable_points(wnd.tablePoints, point_data)
     funcs_table.addToTable_vibrations(wnd.tableVibrations, test.values_vbr)
 

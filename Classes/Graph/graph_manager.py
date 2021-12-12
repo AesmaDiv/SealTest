@@ -4,14 +4,14 @@
 from PyQt5.QtGui import QPalette, QBrush, QColor, QPen
 from PyQt5.QtCore import Qt, QPointF
 from PyQt5.QtWidgets import QFrame
-from Classes.Graph.pump_graph import PumpGraph
+from Classes.Graph.seal_graph import SealGraph
 from Classes.Graph.graph_markers import Markers
 from Classes.UI.funcs_aux import calculateEffs
 from AesmaLib.GraphWidget.chart import Chart
 from AesmaLib.journal import Journal
 
 
-class GraphManager(PumpGraph):
+class GraphManager(SealGraph):
     """ Менеджер графиков """
     def __init__(self, testdata) -> None:
         super().__init__(100, 100, parent=None)

@@ -2,7 +2,7 @@
     Модуль содержит функции для работы с группбоксами главного окна
 """
 from typing import Mapping
-from PyQt5.QtWidgets import QGroupBox, QWidget
+from PyQt5.QtWidgets import QCheckBox, QGroupBox, QWidget
 from PyQt5.QtWidgets import QPushButton, QLineEdit, QComboBox
 from PyQt5.QtCore import QRegExp
 from AesmaLib.journal import Journal
@@ -21,6 +21,8 @@ def groupDisplay(group: QGroupBox, record, log=False):
                 item[0].setText(str(value))
             elif isinstance(item[0], QComboBox):
                 item[0].model().selectContains(value)
+            elif isinstance(item[0], QCheckBox):
+                item[0].setChecked(value if value else False)
             if log:
                 Journal.log(f"{item[0].objectName()} <== {value}")
 
@@ -56,9 +58,10 @@ def groupCheck(group: QGroupBox, log=True):
         (item.objectName().startswith('cmb') and not item.currentText())
     ]
     if empty_fields:
+        empty_fields.insert(0, "Необходимо заполнить поля:")
         Message.show(
             "ВНИМАНИЕ",
-            "Необходимо заполнить поля:\n->  " + "\n->  ".join(empty_fields)
+             "\n->  ".join(empty_fields)
         )
         return False
     return True
@@ -74,6 +77,8 @@ def groupClear(group: QGroupBox):
         elif isinstance(item, QComboBox):
             item.model().resetFilter()
             item.model().select(0)
+        elif isinstance(item, QCheckBox):
+            item.setChecked(False)
     group.repaint()
 
 
